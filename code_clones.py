@@ -27,8 +27,26 @@ def compute_jaccard_similarity(a: str, b: str) -> float:
     b_content = read_file(b).splitlines()
 
     # TODO: Implement the rest of this function
+    # Jaccard similarity does not consider the order of statements
 
-    return 0
+    a_unique = []
+    for line in a_content:
+        if line not in a_unique:
+            a_unique.append(line)
+
+    b_unique = []
+    for line in b_content:
+        if line not in b_unique:
+            b_unique.append(line)
+
+    intersection = 0
+    for line in a_unique:
+        if line in b_unique:
+            intersection += 1
+
+    union = len(a_unique) + len(b_unique) - intersection
+
+    return 1 if union == 0 else intersection / union
 
 def visualise_dot_plot(a: str, b: str) -> str:
     a_content = read_file(a).splitlines()
@@ -43,7 +61,20 @@ def visualise_dot_plot(a: str, b: str) -> str:
     plot += '-' * 80 + '\n'
 
     # TODO: Implement the rest to return the dot plot for the two given programs (a: x-axis, b: y-axis)
+    plot += '\t'
+    for i in range(len(a_content)):
+        plot += f'x{i}\t'
 
+    plot += '\n'
+    for j in range(len(b_content)):
+        plot += f'y{j}'
+        for i in range(len(a_content)):
+            if b_content[j] == a_content[i]:
+                plot += '\t*'
+            else:
+                plot += '\t '
+
+        plot += '\t\n'
     # Below is a sample output:
     '''
     --------------------------------------------------------------------------------
@@ -76,7 +107,7 @@ def visualise_dot_plot(a: str, b: str) -> str:
     --------------------------------------------------------------------------------
     '''
 
-    plot += '\t'
+    # plot += '\t'
     plot += '-' * 80
 
     return plot.strip()
